@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src/main/scala"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/scala"/>
+	<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="/Users/soren/.gradle/caches/artifacts-13/filestore/com.basho.riak/riak-client/1.0.5/jar/d8e8efbad365b8030fc0abd08a0249ce555fb6c5/riak-client-1.0.5.jar" sourcepath="/Users/soren/.gradle/caches/artifacts-13/filestore/com.basho.riak/riak-client/1.0.5/source/5c4987b478570804b7fbcdbefa6e741ef51854c2/riak-client-1.0.5-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/Users/soren/.gradle/caches/artifacts-13/filestore/com.typesafe/config/0.5.0/bundle/4330e7e897aa2da7316be03c45db3cea06dbec0a/config-0.5.0.jar" sourcepath="/Users/soren/.gradle/caches/artifacts-13/filestore/com.typesafe/config/0.5.0/source/1312468eff95d74b415fa849207183091dd31beb/config-0.5.0-sources.jar"/>
