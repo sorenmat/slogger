@@ -1,0 +1,28 @@
+<lift:surround with="bootstrap" at="content">
+    <h2>Why my head hurts today</h2>
+
+    <lift:Server.render>
+    <table>
+
+            <tr>
+
+                <td style="vertical-align:top;">
+
+                    <foo:server/>
+                </td>
+                <td style="vertical-align:top; width: 300px">
+                    <foo:time/>
+                </td>
+                <td>
+                 <foo:message/>
+
+                </td>
+
+
+            </tr>
+
+    </table>
+    </lift:Server.render>
+
+</lift:surround>
+
