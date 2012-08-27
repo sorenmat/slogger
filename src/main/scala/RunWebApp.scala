@@ -1,11 +1,33 @@
-/**
- * Created with IntelliJ IDEA.
- * User: soren
- * Date: 8/8/12
- * Time: 12:52
- * To change this template use File | Settings | File Templates.
- */
+import org.eclipse.jetty.server.nio.SelectChannelConnector
+import org.eclipse.jetty.server.Server
+import org.eclipse.jetty.webapp.WebAppContext
+;
 
-class RunWebApp {
+object RunWebApp extends Application {
+  val server = new Server
+  val scc = new SelectChannelConnector
+  scc.setPort(8080)
+  server.setConnectors(Array(scc))
 
+  val context = new WebAppContext()
+  context.setServer(server)
+  context.setContextPath("/")
+  context.setWar("src/main/webapp")
+
+  server.setHandler(context)
+
+  try {
+    println(">>> STARTING EMBEDDED JETTY SERVER, PRESS ANY KEY TO STOP")
+    server.start()
+    while (System.in.available() == 0) {
+      Thread.sleep(5000)
+    }
+    server.stop()
+    server.join()
+  } catch {
+    case exc : Exception => {
+      exc.printStackTrace()
+      System.exit(100)
+    }
+  }
 }

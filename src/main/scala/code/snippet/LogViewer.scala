@@ -1,13 +1,32 @@
 package code.snippet
 
-/**
- * Created with IntelliJ IDEA.
- * User: soren
- * Date: 8/9/12
- * Time: 20:19
- * To change this template use File | Settings | File Templates.
- */
+import xml.{Text, NodeSeq}
+import net.liftweb.util.Helpers._
+import com.mongodb.Mongo
+import scala.collection.JavaConversions._
 
 class LogViewer {
 
+  val mongo = new Mongo()
+  val db = mongo.getDB( "slogger" );
+  val coll = db.getCollection("logs")
+
+  def render(xhtml: NodeSeq) = {
+
+    val servers = coll.distinct( "server")
+    val cursor = coll.find()
+
+    //bind("server", xhtml, "servers" -> "test")
+
+    coll.find().iterator().toList.sortWith((o1, o2) => o1.get("time").toString > o2.get("time").toString).flatMap {
+      key => bind("foo", xhtml,
+        "server" -> {
+          if(key.get("server") != null) key.get("server").toString else ""
+        },
+        "time" -> key.get("time").toString,
+        "message" -> key.get("logMessage").toString)
+
+    }
+
+  }
 }

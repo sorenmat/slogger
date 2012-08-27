@@ -1,32 +1,48 @@
 package code.snippet
 
 import xml.{Text, NodeSeq}
-import net.liftweb.util.Helpers._
-import com.mongodb.Mongo
+import com.mongodb.{BasicDBObject, Mongo}
 import scala.collection.JavaConversions._
+
+import _root_.net.liftweb.http.SHtml._
+import _root_.net.liftweb.util.Helpers._
 
 class Servers {
 
   val mongo = new Mongo()
-  val db = mongo.getDB( "slogger" );
+  val db = mongo.getDB("slogger");
   val coll = db.getCollection("logs")
 
-  def render(xhtml: NodeSeq) = {
+  def render(xhtml: NodeSeq): NodeSeq = {
+    val servers = coll.distinct("server")
 
-       val servers = coll.distinct("server")
-       val cursor = coll.find()
+    servers.map(s => {
+      // build query
+      val query = new BasicDBObject()
+      query.put("server", s)
+      val result = coll.find(query)
+      while(result.hasNext) {
+        val obj = result.next()
+        println(obj.get("level"))
+      }
 
-       //bind("server", xhtml, "servers" -> "test")
+    })
 
-       coll.find().iterator().toList.sortWith((o1, o2) => o1.get("time").toString > o2.get("time").toString).flatMap {
-         key => bind("foo", xhtml,
-           "server" -> {
-             if(key.get("server") != null) key.get("server").toString else ""
-           },
-           "time" -> key.get("time").toString,
-           "message" -> key.get("logMessage").toString)
+    val data = servers.toList.flatMap({
+      key => bind("foo", xhtml,
+        /*"server" -> link("/server?name=" + key.toString, () => {
+          println(key.toString)
+        }, Text(key.toString)))
+    })
+    */
+        "server" -> clickableImage(xhtml, "/server.html?name=" + key.toString, "images/server.png", key.toString))
+    })
 
-       }
 
-     }
+    data
+  }
+
+  def clickableImage(xhtml: NodeSeq, url: String, image: String, title: String): NodeSeq = {
+    <a class="btn btn-large" href={ url } title={ title }><img src={ image } height="48" width="48"/><br/>{title}</a>
+  }
 }

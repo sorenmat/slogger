@@ -1,46 +1,46 @@
 package code.snippet
 
-import com.mongodb
-import com.mongodb._
-import xml.NodeSeq
+import com.basho.riak.client.RiakFactory
+import com.scalaprog.{Info, Key, Msg}
+import sjson.json.Serializer
+import reflect.BeanInfo
 
-/**
- * Created with IntelliJ IDEA.
- * User: soren
- * Date: 8/19/12
- * Time: 8:45
- * To change this template use File | Settings | File Templates.
- */
+@BeanInfo
+case class Address(street: String, city: String, zip: String) {
+  private def this() = this(null, null, null)
+
+  override def toString = "address = " + street + "/" + city + "/" + zip
+}
+
 object RiakLogLevelTest {
   def main(args: Array[String]) {
-    val mongo = new Mongo()
-    val db = mongo.getDB("slogger");
-    val coll = db.getCollection("logs")
+    //val riakClient = RiakFactory.pbcClient(); //or RiakFactory.httpClient();
+    val riakClient = RiakFactory.httpClient();
+
+    // create a new bucket
+    val myBucket = riakClient.createBucket("myBucket").execute();
 
 
-    val levelCount = """function () {
-      emit(this.level, 1);
-    }"""
+    val serializer = Serializer.SJSON
 
-    val reduceCount = """function (k, vals) {
-                            var sum = 0;
-                            for (var i in vals) {
-                                sum += vals[i];
-                            }
-                            return sum;
-                        }"""
+    for(i <- 0 to 1000) {
+      val key = Key("localhost", System.currentTimeMillis(), "test")
+      val data = Msg(key, Info(), "Hello world "+i+" !!!")
+      myBucket.store(key.toString, new String(serializer.out(Address("soren", "test", "4000")))).execute();
 
+    }
 
+    // add data to the bucket
+    myBucket.store("key1", "value1").execute();
 
-    val query = new BasicDBObject();
-    query.put("server", "Srens-MacBook-Pro.local");
+    //fetch it back
+    var myData = myBucket.fetch("key1").execute();
 
-    val mapCommand = new mongodb.MapReduceCommand(coll, levelCount, reduceCount, null, MapReduceCommand.OutputType.INLINE, query)
+    // you can specify extra parameters to the store operation using the
+    // fluent builder style API
+    myData = myBucket.store("key1", "value2").returnBody(true).execute();
 
-    val result = coll.mapReduce(mapCommand)
-    println(result.getCommandResult)
-    //coll.gr
-    val servers = coll.distinct("server")
-    println(servers)
+    // delete
+    myBucket.delete("key1").rw(3).execute();
   }
 }

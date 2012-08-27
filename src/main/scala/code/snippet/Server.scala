@@ -1,9 +1,11 @@
 package code.snippet
 
-import xml.{Text, NodeSeq}
+import xml.NodeSeq
 import net.liftweb.util.Helpers._
-import com.mongodb.Mongo
+import com.mongodb.{BasicDBObject, Mongo}
 import scala.collection.JavaConversions._
+import net.liftweb.http.S
+import net.liftweb.common.Logger
 
 class Server {
 
@@ -12,18 +14,28 @@ class Server {
   val coll = db.getCollection("logs")
 
   def render(xhtml: NodeSeq) = {
+    val serverName = S.param("name")
+    Logger(classOf[Server]).info("ServerName: " + serverName)
 
-    val servers = coll.distinct("server")
-    val cursor = coll.find()
+    // build query
+    val query = new BasicDBObject();
+    query.put("server", serverName.get);
 
-    //bind("server", xhtml, "servers" -> "test")
+    val result = coll.find(query)
 
-    coll.find().iterator().toList.sortWith((o1, o2) => o1.get("time").toString > o2.get("time").toString).flatMap {
+    result.iterator().toList.sortWith((o1, o2) => o1.get("time").toString > o2.get("time").toString).flatMap {
       key => bind("foo", xhtml,
         "server" -> {
-          if (key.get("server") != null) key.get("server").toString else ""
+          //if (key.get("server") != null) key.get("server").toString else ""
+          ""
         },
-        "time" -> key.get("time").toString,
+        "time" -> {
+          val time = key.get("time").toString
+          if (time != null)
+            new java.util.Date(time.toLong).toString
+          else
+            time
+        },
         "message" -> key.get("logMessage").toString)
 
     }

@@ -1,30 +1,47 @@
-import com.typesafe.config.ConfigFactory
-import akka.actor.{ Props, Actor, ActorSystem }
+package com.scalaprog
+import akka.actor.{Props, Actor, ActorSystem}
 import akka.kernel.Bootable
-import com.basho.riak.client._
-import java.util.UUID
-import scala.collection.JavaConversions._
-import java.util.Date
-import com.mongodb.Mongo
+import com.mongodb.{BasicDBObject, Mongo}
 
-case class Msg(id: String, date: Date, msg: String)
+
+
+case class Error(value: String = "Error") extends Level(value)
+case class Warn(value: String = "Warn") extends Level(value)
+case class Info(value: String = "Info") extends Level(value)
+case class Debug(value: String = "Debug") extends Level(value)
+case class Trace(value: String = "Trace") extends Level(value)
+
+
+case class Key(server: String, date: Long, context: String)
+
+// Log message
+case class Msg(id: Key, level: Level, msg: String)
+
 //#actor
 class SloggerActor extends Actor {
-  val riakClient = RiakFactory.pbcClient //httpClient()
 
-  // create a new bucket
-  val myBucket = riakClient.createBucket("slogger").execute();
   val mongo = new Mongo()
-  val db = mongo.getDB( "slogger" );
+  val db = mongo.getDB("slogger");
   val coll = db.getCollection("logs")
+
+  var handled = 0
+
   def receive = {
     case m: Msg => {
-      printf("[%s] - %s\n", m.id, m.msg)
+      //printf("[%s] - %s\n", m.id, m.msg)
       try {
-        val data = myBucket.store(m.date.toString, m.msg).returnBody(true).execute();
-        //    		println(data.getValueAsString)
-        //    		println("Keys = "+myBucket.keys().mkString)
-        //    		myBucket.keys().foreach(key => println(myBucket.fetch(key).execute.getValueAsString))
+
+        val info = new BasicDBObject();
+        info.put("server", m.id.server)
+        info.put("time", m.id.date.toString)
+        info.put("context", m.id.context)
+        info.put("level", m.level.code)
+        info.put("logMessage", m.msg)
+        coll.save(info)
+
+        handled = handled + 1
+        if (handled % 100 == 0)
+          println("Handled " + handled)
       } catch {
         case e: Throwable => e.printStackTrace
       }
@@ -32,24 +49,7 @@ class SloggerActor extends Actor {
     case _ => println("unknow msg received.")
   }
 
-  /*
-   * 
-   * 
-   *  // add data to the bucket
-    myBucket.store("key1", "value1").execute();
-
-    //fetch it back
-    var myData = myBucket.fetch("key1").execute();
-
-    // you can specify extra parameters to the store operation using the
-    // fluent builder style API
-    myData = myBucket.store("key1", "value2").returnBody(true).execute();
-
-    // delete
-    myBucket.delete("key1").rw(3).execute();
-   */
 }
-//#actor
 
 class SloggerServer extends Bootable {
   val system = ActorSystem("SloggerServer")
