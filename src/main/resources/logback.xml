@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" scanPeriod="60 seconds">
+
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%t] %5p %c{1}:%L - %m%n</pattern>
+		</encoder>
+	</appender>
+
+
+	<appender name="auditlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/audit.log</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%t] %5p %c{1}:%L - %m%n</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>auditlog.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>3</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>5MB</maxFileSize>
+		</triggeringPolicy>
+	</appender>
+
+	<!-- additivity=false ensures auditlog data only goes to the auditlog log -->
+	<logger name="com.schantz.foundation.util.auditlog.FAuditLogger" level="INFO" additivity="false">
+		<appender-ref ref="auditlog" />
+	</logger>
+
+
+
+	<appender name="filelog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/schantz.log</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%t] %5p %c{1}:%L - %m%n</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>schantz.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>3</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>5MB</maxFileSize>
+		</triggeringPolicy>
+	</appender>
+
+	<!-- Sorted alphabetically -->
+	<logger name="com.schantz" level="WARN" />
+	<logger name="com.schantz.batch" level="INFO" />
+	<logger name="com.schantz.foundation.config" level="INFO" />
+	<logger name="com.schantz.foundation.context" level="INFO" />
+	<logger name="com.schantz.foundation.logic.patch" level="INFO" />
+	<logger name="com.schantz.foundation.logic.WrapperLogic" level="ERROR" />
+	<logger name="com.schantz.foundation.model.entity.AbstractQuoteDeletionLogic" level="INFO" />
+	<logger name="com.schantz.foundation.spring.testng.AbstractTest" level="INFO" />
+	<logger name="com.schantz.foundation.util.anonymize" level="INFO" />
+	<logger name="com.schantz.foundation.util.db.mssql" level="INFO" />
+	<logger name="com.schantz.foundation.web.binding" level="WARN" />
+	<logger name="com.schantz.foundation.web.configuration" level="WARN" />
+	<logger name="com.schantz.foundation.web.context.interceptor" level="ERROR" />
+	<logger name="com.schantz.foundation.web.servlet" level="INFO" />
+	<logger name="com.schantz.life.logic.account.aggregate.ReserveAccountItemGrouping" level="INFO" />
+	<logger name="com.schantz.life.logic.eventsystem.projection.ProjectionLogic" level="INFO" />
+	<logger name="com.schantz.life.logic.eventsystem.regression" level="INFO" />
+	<logger name="com.schantz.life.logic.patch" level="INFO" />
+	<logger name="com.schantz.life.logic.reservestatement.ReserveStatementHandlerLogic" level="INFO" />
+	<logger name="com.schantz.life.logic.reservestatement.WLifePolicy_ReserveStatement" level="INFO" />
+	<logger name="com.schantz.pensionsinfo" level="INFO" />
+	<logger name="com.schantz.print" level="DEBUG" />
+	<logger name="com.schantz.util.db.dbsubset" level="INFO" />
+	<logger name="com.schantz.util.db.dbsubset.generator.SubsetSpider" level="WARN" />
+	<logger name="com.schantz.util.db.dbsubset.metadata.loader" level="INFO" />
+	<logger name="dk.bec" level="ERROR" />
+	<logger name="dk.bec.ds.ws.client.printnet.PrintNetServiceClient" level="INFO" />
+	<logger name="dk.bec.externalintegration.batch" level="INFO" />
+	<logger name="dk.bec.externalintegration.pbs" level="INFO" />
+	<logger name="dk.bec.galop.batch" level="INFO" />
+	<logger name="dk.bec.galop.context" level="WARN" />
+	<logger name="dk.bec.galop.pensionsinfo.logic.batch" level="INFO" />
+	<logger name="dk.bec.pension.foundation.web.configuration.ControllerAutoDiscover" level="WARN" />
+	<logger name="dk.bec.pension.foundation.web.logic.FoundationWebLogger" level="INFO" />
+	<logger name="dk.bec.pension.foundation.web.servlet.GalopServletContextListener" level="INFO" />
+	<logger name="dk.bec.pension.foundation.web.servlet.InputOutputDumpingServletFilter" level="INFO" />
+	<logger name="dk.becpension" level="INFO" />
+	<logger name="dk.becpension.web.foundation.pages.configuration" level="WARN" />
+	<logger name="httpclient.wire" level="WARN" />
+	<logger name="jdbc.sqlonly" level="INFO" />
+	<logger name="org.acegisecurity" level="WARN" />
+	<logger name="org.hibernate" level="ERROR" />
+	<logger name="org.hibernate.cfg.Configuration" level="INFO" />
+	<logger name="org.hibernate.cfg.SettingsFactory" level="INFO" />
+	<logger name="org.hibernate.dialect.Dialect" level="INFO" />
+	<logger name="org.hibernate.ejb.Ejb3Configuration" level="WARN" />
+	<logger name="org.hibernate.event.def.AbstractFlushingEventListener" level="ERROR" />
+	<logger name="org.hibernate.impl" level="WARN" />
+	<logger name="org.hibernate.transaction" level="WARN" />
+	<logger name="org.hibernate.util.JDBCExceptionReporter" level="ERROR" />
+	<logger name="org.springframework" level="INFO" />
+	<logger name="org.springframework.jdbc.datasource.DriverManagerDataSource" level="WARN" />
+	<logger name="org.springframework.orm.jpa" level="WARN" />
+	<logger name="org.springframework.transaction" level="WARN" />
+	<logger name="org.apache.cxf.transport.servlet.CXFServlet" level="INFO" />
+	<logger name="org.apache.cxf.service.factory.ReflectionServiceFactoryBean" level="INFO" />
+		
+	<include resource="include-logback.xml"/>
+	
+	<root level="WARN">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="filelog" />
+	</root>
+
+</configuration>

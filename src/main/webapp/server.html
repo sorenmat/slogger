@@ -2,26 +2,17 @@
     <h2>Why my head hurts today</h2>
 
     <lift:Server.render>
-    <table>
+        <foo:server/>
+        <label class="control-label" for="input01">
+            <foo:time/>
+        </label>
 
-            <tr>
-
-                <td style="vertical-align:top;">
-
-                    <foo:server/>
-                </td>
-                <td style="vertical-align:top; width: 300px">
-                    <foo:time/>
-                </td>
-                <td>
-                 <foo:message/>
-
-                </td>
+        <p class="help-block">
+            <foo:message/>
+        </p>
 
 
-            </tr>
 
-    </table>
     </lift:Server.render>
 
 </lift:surround>
