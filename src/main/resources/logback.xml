@@ -9,43 +9,12 @@
 	</appender>
 
 
-	<appender name="auditlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>logs/audit.log</file>
-		<append>true</append>
-		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%t] %5p %c{1}:%L - %m%n</pattern>
-		</encoder>
-		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<fileNamePattern>auditlog.%i.log.zip</fileNamePattern>
-			<minIndex>1</minIndex>
-			<maxIndex>3</maxIndex>
-		</rollingPolicy>
-		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-			<maxFileSize>5MB</maxFileSize>
-		</triggeringPolicy>
-	</appender>
-
-	<!-- additivity=false ensures auditlog data only goes to the auditlog log -->
-	<logger name="com.schantz.foundation.util.auditlog.FAuditLogger" level="INFO" additivity="false">
-		<appender-ref ref="auditlog" />
-	</logger>
-
-
-
-	<appender name="filelog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<appender name="filelog" class="Log2Slogger">
 		<file>logs/schantz.log</file>
 		<append>true</append>
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS} [%t] %5p %c{1}:%L - %m%n</pattern>
 		</encoder>
-		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<fileNamePattern>schantz.%i.log.zip</fileNamePattern>
-			<minIndex>1</minIndex>
-			<maxIndex>3</maxIndex>
-		</rollingPolicy>
-		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-			<maxFileSize>5MB</maxFileSize>
-		</triggeringPolicy>
 	</appender>
 
 	<!-- Sorted alphabetically -->
@@ -106,9 +75,7 @@
 	<logger name="org.apache.cxf.transport.servlet.CXFServlet" level="INFO" />
 	<logger name="org.apache.cxf.service.factory.ReflectionServiceFactoryBean" level="INFO" />
 		
-	<include resource="include-logback.xml"/>
-	
-	<root level="WARN">
+	<root level="INFO">
 		<appender-ref ref="stdout" />
 		<appender-ref ref="filelog" />
 	</root>

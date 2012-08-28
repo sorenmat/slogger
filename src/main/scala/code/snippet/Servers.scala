@@ -33,10 +33,18 @@ class Servers {
     val result = Text(serverName) ++ <br/> ++
       Text("Errors: " + errors) ++ <br/> ++
       Text("Info: " + info)
-    println("Result: " + result.toString)
     result
   }
 
+  /**
+   * Create clickable image, styled with btn-large
+   * @param xhtml
+   * @param url
+   * @param image
+   * @param title
+   * @param description
+   * @return
+   */
   def clickableImage(xhtml: NodeSeq, url: String, image: String, title: String, description: NodeSeq): NodeSeq = {
     <div class="btn btn-large" style="width: 200px">
       <a href={url} title={title}>

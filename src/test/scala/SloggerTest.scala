@@ -14,7 +14,7 @@ object SloggerTest {
    val  remoteActor = system.actorFor("akka://SloggerServer@127.0.0.1:2552/user/sloggerActor")
     val key = Key("localhost", System.currentTimeMillis(), "test")
    for(i <- 0 to 1000) {
-     remoteActor ! Msg(key, Error(), "There is an error "+i+" !!!")
+     remoteActor ! Msg(key, Info(), "There is an error "+i+" !!!")
    }
 
     Thread.sleep(1000)
