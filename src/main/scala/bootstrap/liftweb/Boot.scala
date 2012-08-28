@@ -20,16 +20,15 @@ class Boot {
 
     // Build SiteMap
     def sitemap = SiteMap(
-      Menu.i("Servers") / "index" >> User.AddUserMenusAfter, // the simple way to declare a menu
+      Menu.i("Servers") / "index", // the simple way to declare a menu
       //Menu.i("Servers") / "servers" >> User.AddUserMenusAfter,
-      Menu.i("Server") / "server" >> User.AddUserMenusAfter, // the simple way to declare a menu
+      Menu.i("Server") / "server" // the simple way to declare a menu
     )
 
-    def sitemapMutators = User.sitemapMutator
 
     // set the sitemap.  Note if you don't want access control for
     // each page, just comment this line out.
-    LiftRules.setSiteMapFunc(() => sitemapMutators(sitemap))
+    //LiftRules.setSiteMapFunc(() => sitemapMutators(sitemap))
 
     // Use jQuery 1.4
     LiftRules.jsArtifacts = net.liftweb.http.js.jquery.JQuery14Artifacts
@@ -46,7 +45,7 @@ class Boot {
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
 
     // What is the function to test if a user is logged in?
-    LiftRules.loggedInTest = Full(() => User.loggedIn_?)
+    //LiftRules.loggedInTest = Full(() => User.loggedIn_?)
 
     // Use HTML5 for rendering
     //LiftRules.htmlProperties.default.set((r: Req) => new Html5Properties(r.userAgent))
