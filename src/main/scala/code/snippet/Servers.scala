@@ -1,11 +1,11 @@
 package code.snippet
 
 import xml.{Text, NodeSeq}
-import com.mongodb.{BasicDBObject, Mongo}
+import com.mongodb.Mongo
 import scala.collection.JavaConversions._
 
-import _root_.net.liftweb.http.SHtml._
 import _root_.net.liftweb.util.Helpers._
+import com.scalaprog.MongoFunctions
 
 class Servers {
 
@@ -16,33 +16,33 @@ class Servers {
   def render(xhtml: NodeSeq): NodeSeq = {
     val servers = coll.distinct("server")
 
-    servers.map(s => {
-      // build query
-      val query = new BasicDBObject()
-      query.put("server", s)
-      val result = coll.find(query)
-      while(result.hasNext) {
-        val obj = result.next()
-        println(obj.get("level"))
+    val data = servers.toList.filter(s => s != null).flatMap({
+      key => {
+        println("key: " + key)
+        val infos = MongoFunctions.getCount("Info", key.toString, coll)
+        val errors = MongoFunctions.getCount("Error", key.toString, coll)
+        bind("foo", xhtml,
+          "server" -> clickableImage(xhtml, "/server.html?name=" + key.toString, "images/server.png", key.toString, serverInfo(key.toString, infos, errors)))
       }
 
     })
-
-    val data = servers.toList.flatMap({
-      key => bind("foo", xhtml,
-        /*"server" -> link("/server?name=" + key.toString, () => {
-          println(key.toString)
-        }, Text(key.toString)))
-    })
-    */
-        "server" -> clickableImage(xhtml, "/server.html?name=" + key.toString, "images/server.png", key.toString))
-    })
-
-
     data
   }
 
-  def clickableImage(xhtml: NodeSeq, url: String, image: String, title: String): NodeSeq = {
-    <a class="btn btn-large" href={ url } title={ title }><img src={ image } height="48" width="48"/><br/>{title}</a>
+  def serverInfo(serverName: String, info: Long, errors: Long): NodeSeq = {
+    val result = Text(serverName) ++ <br/> ++
+      Text("Errors: " + errors) ++ <br/> ++
+      Text("Info: " + info)
+    println("Result: " + result.toString)
+    result
+  }
+
+  def clickableImage(xhtml: NodeSeq, url: String, image: String, title: String, description: NodeSeq): NodeSeq = {
+    <div class="btn btn-large" style="width: 200px">
+      <a href={url} title={title}>
+        <img src={image} height="48" width="48"/>
+        <br/>{description}
+      </a>
+    </div>
   }
 }
