@@ -9,7 +9,7 @@
 	</appender>
 
 
-	<appender name="filelog" class="Log2Slogger">
+	<appender name="filelog" class="com.Log2Slogger">
 		<file>logs/schantz.log</file>
 		<append>true</append>
 		<encoder>

@@ -2,6 +2,8 @@ name := "Slogger"
 
 version := "1.0"
 
+resolvers += "sgodbillon" at "https://bitbucket.org/sgodbillon/repository/raw/master/snapshots/"
+
 resolvers ++= Seq("snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
                     "releases"  at "http://oss.sonatype.org/content/repositories/releases",
                     "Java.net Maven2 Repository" at "http://download.java.net/maven/2/",
@@ -9,6 +11,10 @@ resolvers ++= Seq("snapshots" at "http://oss.sonatype.org/content/repositories/s
                     
 libraryDependencies += "org.mongodb" % "casbah_2.9.2" % "2.4.1"
 
+/*libraryDependencies ++= Seq(
+  "reactivemongo" %% "reactivemongo" % "0.1-SNAPSHOT"
+)
+  */
 seq(webSettings: _*)
 
 // If using JRebel with 0.1.0 of the sbt web plugin
@@ -23,11 +29,12 @@ seq(webSettings: _*)
 //checksums := Nil
 
 libraryDependencies ++= {
-  val liftVersion = "2.4" // Put the current/latest lift version here
+  val liftVersion = "2.5-M1" // Put the current/latest lift version here
   Seq(
     "net.liftweb" %% "lift-webkit" % liftVersion ,
     "net.liftweb" %% "lift-mapper" % liftVersion ,
-    "net.liftweb" %% "lift-wizard" % liftVersion
+    "net.liftweb" %% "lift-wizard" % liftVersion,
+    "net.liftmodules.widgets" % "widgets" % "1.1-SNAPSHOT" % "compile->default"
     //,"org.eclipse.jetty" % "jetty" % "8.0.4.v20111024"
      )
 }

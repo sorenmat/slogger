@@ -1,11 +1,21 @@
+package com
+
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.AppenderBase
 import ch.qos.logback.core.status.Status
 import akka.actor.ActorSystem
-import com.scalaprog._
+import scalaprog._
 import com.typesafe.config.ConfigFactory
 import akka.actor.ActorRef
 import java.net.InetAddress
+import scalaprog.Debug
+import scalaprog.Error
+import scalaprog.Info
+import scalaprog.Key
+import scalaprog.Level
+import scalaprog.Msg
+import scalaprog.Trace
+import scalaprog.Warn
 
 class Log2Slogger[E <: ILoggingEvent] extends AppenderBase[E] {
 
@@ -16,7 +26,7 @@ class Log2Slogger[E <: ILoggingEvent] extends AppenderBase[E] {
     super.start
     println("Starting......")
     try {
-      val system = ActorSystem("sloggerclient", ConfigFactory.load.getConfig("sloggerclient"))
+      val system = ActorSystem("sloggerclient")
       remoteActor = system.actorFor("akka://SloggerServer@127.0.0.1:2552/user/sloggerActor")
 
     } catch {
@@ -48,8 +58,8 @@ class Log2Slogger[E <: ILoggingEvent] extends AppenderBase[E] {
   override def addStatus(s: Status) {
     val key = Key(host, System.currentTimeMillis(), "")
     val statusLevel = s.getLevel
-    println("\n*\n*\n*\n*\n*\n*\n*\n*\n*"+statusLevel+"\n*\n*\n*\n*\n*")
-    remoteActor ! Msg(key, Info(), s.getMessage())
+    val message = if (s != null) s.getMessage() else ""
+    remoteActor ! Msg(key, Info(), message)
   }
 }
 

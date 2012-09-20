@@ -1,11 +1,8 @@
 import com.mongodb._
+import com.scalaprog.MongoFunctions
 
 /**
- * Created with IntelliJ IDEA.
  * User: soren
- * Date: 8/19/12
- * Time: 8:45
- * To change this template use File | Settings | File Templates.
  */
 object DistinctLogLevelTest {
   def main(args: Array[String]) {
@@ -16,6 +13,14 @@ object DistinctLogLevelTest {
     val start = System.currentTimeMillis()
     println("Found " + getCount("Info", coll) + " infos...")
     println("Found " + getCount("Error", coll) + " error...")
+
+
+    val textstart = System.currentTimeMillis()
+    val result = MongoFunctions.searchLogMessages("GET", coll)
+    val textstop = System.currentTimeMillis()
+    println("regexp query took: "+(textstop-textstart)+" ms")
+    while(result.hasNext)
+    println(result.next().toString)
 
     println("queries took: "+(System.currentTimeMillis()-start)+" ms")
   }
